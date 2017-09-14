@@ -10,11 +10,12 @@ import (
 	asyncinflux "github.com/applift/async-influxdb-client"
 	"github.com/joho/godotenv"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var metricService *asyncinflux.AsyncClient
 var promCounter prometheus.Counter
-var promResponce prometheus.Counter
+var promResponce prometheus.Summary
 
 func main() {
 	err := godotenv.Load()
@@ -33,6 +34,13 @@ func main() {
 	}
 }
 
+func generateEvents(events chan<- int) {
+	for {
+		events <- int(rand.Int31n(10))
+		time.Sleep(time.Second * 1)
+	}
+}
+
 func initClients() {
 	// Setup defaults
 	var err error
@@ -45,29 +53,16 @@ func initClients() {
 		Name: "test_responce_counter",
 		Help: "Number of test_responces.",
 	})
-	err = prometheus.Register(promCounter)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	prometheus.MustRegister(promCounter)
 
-	promResponce = prometheus.NewGauge(prometheus.GaugeOpts{
+	promResponce = prometheus.NewSummary(prometheus.SummaryOpts{
 		Name: "test_responce_time",
 		Help: "Time of test responce.",
 	})
-	err = prometheus.Register(promResponce)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	prometheus.MustRegister(promResponce)
 
-	http.Handle("/metrics", prometheus.Handler())
+	http.Handle("/metrics", promhttp.Handler())
 	go func() { log.Fatal(http.ListenAndServe(":8080", nil)) }()
-}
-
-func generateEvents(events chan<- int) {
-	for {
-		events <- int(rand.Int31n(10))
-		time.Sleep(time.Second * 2)
-	}
 }
 
 func logResponce(time int) {
@@ -75,5 +70,5 @@ func logResponce(time int) {
 
 	metricService.Send(asyncinflux.NewMetricDatum("test_measurement", map[string]string{}, map[string]interface{}{"response": time}))
 	promCounter.Inc()
-	promResponce.Add(float64(time))
+	promResponce.Observe(float64(time))
 }
