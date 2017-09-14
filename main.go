@@ -14,6 +14,7 @@ import (
 
 var metricService *asyncinflux.AsyncClient
 var promCounter prometheus.Counter
+var promResponce prometheus.Counter
 
 func main() {
 	err := godotenv.Load()
@@ -49,7 +50,7 @@ func initClients() {
 		log.Fatal(err.Error())
 	}
 
-	promResponce := prometheus.NewGauge(prometheus.GaugeOpts{
+	promResponce = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "test_responce_time",
 		Help: "Time of test responce.",
 	})
@@ -74,5 +75,5 @@ func logResponce(time int) {
 
 	metricService.Send(asyncinflux.NewMetricDatum("test_measurement", map[string]string{}, map[string]interface{}{"response": time}))
 	promCounter.Inc()
-
+	promResponce.Add(float64(time))
 }
