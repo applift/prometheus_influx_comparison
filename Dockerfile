@@ -6,7 +6,7 @@ WORKDIR /go/src/github.com/gburanov/prometheus_influx_comparison
 COPY . /go/src/github.com/gburanov/prometheus_influx_comparison
 
 RUN go get -u github.com/golang/dep/cmd/dep
-RUN godep restore
+RUN dep ensure
 RUN rm -f /go/src/github.com/gburanov/prometheus_influx_comparison/prometheus_influx_comparison
 RUN go build .
 
