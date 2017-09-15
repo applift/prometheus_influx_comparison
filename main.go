@@ -69,6 +69,7 @@ func logResponce(time int) {
 	fmt.Printf("Response took %d seconds\n", time)
 
 	metricService.Send(asyncinflux.NewMetricDatum("test_measurement", map[string]string{}, map[string]interface{}{"response": time}))
+	metricService.Send(asyncinflux.NewMetricDatum("test_measurement", map[string]string{}, map[string]interface{}{"count": 1}))
 	promCounter.Inc()
 	promResponce.Observe(float64(time))
 }
