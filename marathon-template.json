@@ -1,6 +1,10 @@
 {
   "id": "${MARATHON_TASK_ID}",
   "cmd": "/go/src/github.com/gburanov/prometheus_influx_comparison/prometheus_influx_comparison",
+  "env": {
+    "INFLUXDB_ENDPOINT": "http://influxdb.us1.prod.applift:9096",
+    "INFLUXDB_DATABASE": "idsp"
+  },
   "cpus": 0.2,
   "mem": 600,
   "disk": 0,
