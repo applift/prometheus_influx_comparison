@@ -1,6 +1,6 @@
 {
   "id": "${MARATHON_TASK_ID}",
-  "cmd": "/go/src/github.com/applift/prometheus_influx_comparison/prometheus_influx_comparison",
+  "cmd": "/go/src/github.com/gburanov/prometheus_influx_comparison/prometheus_influx_comparison",
   "cpus": 0.2,
   "mem": 600,
   "disk": 0,
