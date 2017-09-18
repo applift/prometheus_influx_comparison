@@ -14,8 +14,16 @@
     "volumes": [],
     "docker": {
       "image": "${DOCKER_IMAGE}",
-      "network": "HOST",
-      "portMappings": null,
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 0,
+          "protocol": "tcp",
+          "name": "8080",
+          "labels": {}
+        }
+      ],
       "privileged": false,
       "parameters": [],
       "forcePullImage": true
