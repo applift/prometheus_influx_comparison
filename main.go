@@ -20,7 +20,7 @@ var promResponce prometheus.Summary
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		fmt.Println("Error loading .env file but ok - skip it")
 	}
 
 	events := make(chan int)
